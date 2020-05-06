@@ -27,6 +27,6 @@ gradle clean build \
                         --network buzz-play-network \
                         --env VALID_APP_NAME="$APP_NAME" \
                         --env VALID_MYSQL_HOSTNAME="$MYSQL_HOST" \
-                        --publish "$PARENT_PORT":8443 \
+                        --publish "$PORT":8443 \
                         --link "$MYSQL_HOST" \
                         --name "$APP_NAME" "$APP_NAME"
