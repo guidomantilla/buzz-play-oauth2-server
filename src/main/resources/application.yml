@@ -1,0 +1,42 @@
+server:
+  port: 8443
+  compression:
+    enabled: false
+  ssl:
+    enabled: true
+    protocol: TLS
+    key-store: classpath:ssl.p12
+    key-store-password: Raven123qweasd+
+    key-store-type: PKCS12
+    key-alias: ssl
+
+spring:
+  main:
+    banner-mode: off
+    allow-bean-definition-overriding: false
+    register-shutdown-hook: true
+  application:
+    name: buzzplay.oauth2.server
+  profiles:
+    active: ${VALID_OAUTH2_ENVIRONMENT:dev}
+  datasource:
+    url: ${VALID_OAUTH2_DATASOURCE_URL:jdbc:mysql://localhost:3309/buzz-play-security?useSSL=false&allowPublicKeyRetrieval=true}
+    username: ${VALID_OAUTH2_DATASOURCE_USERNAME:root}
+    password: ${VALID_OAUTH2_DATASOURCE_PASSWORD:raven123}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    initialization-mode: never
+    platform: mysql
+    tomcat:
+      test-while-idle: true
+      validation-query: SELECT 1
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+        show_sql: false
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+check-user-scopes: true
