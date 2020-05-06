@@ -20,6 +20,9 @@ spring:
     name: ${BUZZ_PLAY_APP_NAME:buzz-play-oauth2}
   profiles:
     active: ${BUZZ_PLAY_OAUTH2_ENVIRONMENT:dev}
+  thymeleaf:
+    cache: false
+    enabled: true
   datasource:
     url: ${BUZZ_PLAY_OAUTH2_DATASOURCE_URL:jdbc:mysql://localhost:3309/buzz-play-security?useSSL=false&allowPublicKeyRetrieval=true}
     username: ${BUZZ_PLAY_OAUTH2_DATASOURCE_USERNAME:root}

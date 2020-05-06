@@ -8,11 +8,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
 
-public class WebApiSecurityConfigAdapter extends WebSecurityConfigurerAdapter {
+public class WebApiSecurityConfigAdapter extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
     private AuthenticationProvider authenticationProvider;
     private UserDetailsService userDetailsService;
@@ -37,6 +39,21 @@ public class WebApiSecurityConfigAdapter extends WebSecurityConfigurerAdapter {
     }
 
     //----------------------------
+    // Init - WebMvcConfigurer
+    //----------------------------
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/img/**", "/css/**", "/js/**")
+                .addResourceLocations("classpath:/static/img/", "classpath:/static/css/", "classpath:/static/js/");
+    }
+
+    //----------------------------
+    // End - WebMvcConfigurer
+    //----------------------------
+
+
+    //----------------------------
     // Init - WebSecurityConfigurerAdapter
     //----------------------------
 
@@ -52,12 +69,14 @@ public class WebApiSecurityConfigAdapter extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         super.configure(web);
+        web.ignoring()
+                .antMatchers("/**/js/**", "/**/css/**");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        turnOnSecurity(http, "/login", "/oauth/authorize");
+        turnOnSecurity(http, "/", "/error", "/oauth/authorize");
         sessionBehavior(http);
         errorHandling(http);
     }
