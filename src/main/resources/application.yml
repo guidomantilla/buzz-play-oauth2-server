@@ -9,20 +9,21 @@ server:
     key-store-password: Raven123qweasd+
     key-store-type: PKCS12
     key-alias: ssl
-
+  servlet:
+    context-path: /${BUZZ_PLAY_APP_NAME:buzz-play-oauth2}
 spring:
   main:
     banner-mode: off
     allow-bean-definition-overriding: false
     register-shutdown-hook: true
   application:
-    name: buzzplay.oauth2.server
+    name: ${BUZZ_PLAY_APP_NAME:buzz-play-oauth2}
   profiles:
-    active: ${VALID_OAUTH2_ENVIRONMENT:dev}
+    active: ${BUZZ_PLAY_OAUTH2_ENVIRONMENT:dev}
   datasource:
-    url: ${VALID_OAUTH2_DATASOURCE_URL:jdbc:mysql://localhost:3309/buzz-play-security?useSSL=false&allowPublicKeyRetrieval=true}
-    username: ${VALID_OAUTH2_DATASOURCE_USERNAME:root}
-    password: ${VALID_OAUTH2_DATASOURCE_PASSWORD:raven123}
+    url: ${BUZZ_PLAY_OAUTH2_DATASOURCE_URL:jdbc:mysql://localhost:3309/buzz-play-security?useSSL=false&allowPublicKeyRetrieval=true}
+    username: ${BUZZ_PLAY_OAUTH2_DATASOURCE_USERNAME:root}
+    password: ${BUZZ_PLAY_OAUTH2_DATASOURCE_PASSWORD:raven123}
     driver-class-name: com.mysql.cj.jdbc.Driver
     initialization-mode: never
     platform: mysql

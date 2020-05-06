@@ -1,0 +1,17 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Application" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+    <module name="buzz-play-oauth2-server.main" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="buzzplay.oauth2.server.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <option name="SPRING_BOOT_MAIN_CLASS" value="buzzplay.oauth2.server.Application" />
+    <option name="PROGRAM_PARAMETERS" value="--server.port=9443" />
+    <option name="ALTERNATIVE_JRE_PATH" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
