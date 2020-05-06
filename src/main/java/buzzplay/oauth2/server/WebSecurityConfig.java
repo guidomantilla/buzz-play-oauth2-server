@@ -1,6 +1,6 @@
 package buzzplay.oauth2.server;
 
-import buzzplay.oauth2.common.WebApiSecurityConfigAdapter;
+import toolbox.spring.oauth2.common.WebApiSecurityConfigAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

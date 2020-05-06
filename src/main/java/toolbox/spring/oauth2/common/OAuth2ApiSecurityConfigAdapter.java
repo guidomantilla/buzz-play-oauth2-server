@@ -1,4 +1,4 @@
-package buzzplay.oauth2.common;
+package toolbox.spring.oauth2.common;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
