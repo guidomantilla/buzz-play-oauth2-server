@@ -1,6 +1,7 @@
 package buzzplay.oauth2.server;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -25,11 +26,22 @@ public class OAuth2BeanConfig {
 
     private final DataSource dataSource;
     private final ClientDetailsService clientDetailsService;
+    private final String jwtKeyStore;
+    private final String jwtKeyStorePassword;
+    private final String jwtKeyAlias;
 
     @Autowired
-    public OAuth2BeanConfig(ClientDetailsService clientDetailsService, DataSource dataSource) {
+    public OAuth2BeanConfig(ClientDetailsService clientDetailsService, DataSource dataSource,
+                            @Value("${toolbox.oauth2.jwt.key-store}") String jwtKeyStore,
+                            @Value("${toolbox.oauth2.jwt.key-store-password}") String jwtKeyStorePassword,
+                            @Value("${toolbox.oauth2.jwt.key-alias}") String jwtKeyAlias) {
+
         this.clientDetailsService = clientDetailsService;
         this.dataSource = dataSource;
+
+        this.jwtKeyStore = jwtKeyStore.replace("classpath:", "");
+        this.jwtKeyStorePassword = jwtKeyStorePassword;
+        this.jwtKeyAlias = jwtKeyAlias;
     }
 
     @Bean
@@ -45,7 +57,7 @@ public class OAuth2BeanConfig {
     @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-        converter.setKeyPair(new KeyStoreKeyFactory(new ClassPathResource("jwt.jks"), "Raven123qweasd+".toCharArray()).getKeyPair("jwt"));
+        converter.setKeyPair(new KeyStoreKeyFactory(new ClassPathResource(jwtKeyStore), jwtKeyStorePassword.toCharArray()).getKeyPair(jwtKeyAlias));
         return converter;
     }
 

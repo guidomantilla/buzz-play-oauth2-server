@@ -1,14 +1,10 @@
-package buzzplay.oauth2.server;
+package buzzplay.oauth2.common;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.OAuth2RequestFactory;
@@ -17,13 +13,9 @@ import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenCo
 
 import javax.sql.DataSource;
 
-@Configuration
-@EnableAuthorizationServer
-public class OAuth2ServerConfig extends AuthorizationServerConfigurerAdapter {
+public class OAuth2ApiSecurityConfigAdapter extends AuthorizationServerConfigurerAdapter {
 
-    @Value("${check-user-scopes}")
     private Boolean checkUserScopes;
-
     private DataSource dataSource;
     private UserDetailsService userDetailsService;
     private PasswordEncoder passwordEncoder;
@@ -32,17 +24,18 @@ public class OAuth2ServerConfig extends AuthorizationServerConfigurerAdapter {
     private OAuth2RequestFactory oAuth2RequestFactory;
     private AuthenticationManager authenticationManager;
 
-    @Autowired
-    public OAuth2ServerConfig(AuthenticationManager authenticationManager, UserDetailsService userDetailsService,
-                              JwtAccessTokenConverter jwtAccessTokenConverter, TokenStore tokenStore,
-                              OAuth2RequestFactory oAuth2RequestFactory, PasswordEncoder passwordEncoder,
-                              DataSource dataSource) {
+    public OAuth2ApiSecurityConfigAdapter(AuthenticationManager authenticationManager, UserDetailsService userDetailsService,
+                                          JwtAccessTokenConverter jwtAccessTokenConverter, TokenStore tokenStore,
+                                          OAuth2RequestFactory oAuth2RequestFactory, PasswordEncoder passwordEncoder, Boolean checkUserScopes,
+                                          DataSource dataSource) {
+
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.jwtAccessTokenConverter = jwtAccessTokenConverter;
         this.tokenStore = tokenStore;
         this.oAuth2RequestFactory = oAuth2RequestFactory;
         this.passwordEncoder = passwordEncoder;
+        this.checkUserScopes = checkUserScopes;
         this.dataSource = dataSource;
     }
 

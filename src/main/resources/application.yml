@@ -39,4 +39,11 @@ spring:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 
-check-user-scopes: true
+toolbox:
+  oauth2:
+    check-user-scopes: true
+    jwt:
+      enabled: true
+      key-store: classpath:jwt.jks
+      key-store-password: Raven123qweasd+
+      key-alias: jwt
