@@ -69,8 +69,7 @@ public class WebApiSecurityConfigAdapter extends WebSecurityConfigurerAdapter im
     @Override
     public void configure(WebSecurity web) throws Exception {
         super.configure(web);
-        web.ignoring()
-                .antMatchers("/**/js/**", "/**/css/**");
+        web.ignoring().antMatchers("/**/js/**", "/**/css/**");
     }
 
     @Override

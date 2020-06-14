@@ -19,14 +19,12 @@ else
     MYSQL_HOST="$PARENT_MYSQL_HOST"
 fi
 
-gradle clean build \
-&& mv build/libs/$(ls build/libs) build/libs/"$APP_NAME".jar \
-&& docker build . -t "$APP_NAME" \
+docker build . -t "$APP_NAME" \
 && docker container rm --force "$APP_NAME"
    docker container run --detach --restart always \
                         --network buzz-play-network \
-                        --env VALID_APP_NAME="$APP_NAME" \
-                        --env VALID_MYSQL_HOSTNAME="$MYSQL_HOST" \
+                        --env BUZZ_PLAY_APP_NAME="$APP_NAME" \
+                        --env BUZZ_PLAY_MYSQL_HOSTNAME="$MYSQL_HOST" \
                         --publish "$PORT":8443 \
                         --link "$MYSQL_HOST" \
                         --name "$APP_NAME" "$APP_NAME"

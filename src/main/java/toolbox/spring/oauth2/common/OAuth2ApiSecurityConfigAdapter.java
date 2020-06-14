@@ -45,12 +45,12 @@ public class OAuth2ApiSecurityConfigAdapter extends AuthorizationServerConfigure
     }
 
     @Override
-    public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
+    public void configure(AuthorizationServerSecurityConfigurer security) {
         security.tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()");
     }
 
     @Override
-    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+    public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
         endpoints.tokenStore(tokenStore).tokenEnhancer(jwtAccessTokenConverter)
                 .authenticationManager(authenticationManager).userDetailsService(userDetailsService);
         if (checkUserScopes)
