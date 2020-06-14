@@ -97,7 +97,7 @@ public class WebApiSecurityConfigAdapter extends WebSecurityConfigurerAdapter im
     public void turnOffSecurity(HttpSecurity http, String... allowAntPatterns) throws Exception {
 
         http.httpBasic().disable();
-        http.csrf();
+        http.csrf().disable();
         http.cors().disable();
 
         http.authorizeRequests().antMatchers(allowAntPatterns).permitAll();
