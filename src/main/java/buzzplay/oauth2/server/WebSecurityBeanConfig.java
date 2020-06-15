@@ -1,6 +1,10 @@
 package buzzplay.oauth2.server;
 
+import buzzplay.oauth2.server.common.config.SubjectAttributeUserTokenConverter;
+import buzzplay.oauth2.server.common.jdbc.CustomAppClientDetailsService;
+import buzzplay.oauth2.server.common.jdbc.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,8 +22,6 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
-import toolbox.spring.oauth2.common.SubjectAttributeUserTokenConverter;
 
 import javax.sql.DataSource;
 import java.security.KeyPair;
@@ -28,23 +30,26 @@ import java.security.KeyPair;
 public class WebSecurityBeanConfig {
 
     private final DataSource dataSource;
-    private final ClientDetailsService clientDetailsService;
     private final String jwtKeyStore;
     private final String jwtKeyStorePassword;
     private final String jwtKeyAlias;
 
     @Autowired
-    public WebSecurityBeanConfig(ClientDetailsService clientDetailsService, DataSource dataSource,
+    public WebSecurityBeanConfig(DataSource dataSource,
                                  @Value("${toolbox.oauth2.jwt.key-store}") String jwtKeyStore,
                                  @Value("${toolbox.oauth2.jwt.key-store-password}") String jwtKeyStorePassword,
                                  @Value("${toolbox.oauth2.jwt.key-alias}") String jwtKeyAlias) {
 
-        this.clientDetailsService = clientDetailsService;
         this.dataSource = dataSource;
-
         this.jwtKeyStore = jwtKeyStore.replace("classpath:", "");
         this.jwtKeyStorePassword = jwtKeyStorePassword;
         this.jwtKeyAlias = jwtKeyAlias;
+    }
+
+    @Bean
+    public KeyPair keyPair() {
+        return new KeyStoreKeyFactory(new ClassPathResource(jwtKeyStore),
+                jwtKeyStorePassword.toCharArray()).getKeyPair(jwtKeyAlias);
     }
 
     @Bean
@@ -54,13 +59,15 @@ public class WebSecurityBeanConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return new JdbcUserDetailsManager(dataSource);
+        return new CustomUserDetailsService(dataSource);
     }
 
-    @Bean
-    public KeyPair keyPair() {
-        return new KeyStoreKeyFactory(new ClassPathResource(jwtKeyStore),
-                jwtKeyStorePassword.toCharArray()).getKeyPair(jwtKeyAlias);
+    @Bean("customAppClientDetailsService")
+    @Autowired
+    public ClientDetailsService clientDetailsService(PasswordEncoder passwordEncoder) {
+        CustomAppClientDetailsService customAppClientDetailsService = new CustomAppClientDetailsService(dataSource);
+        customAppClientDetailsService.setPasswordEncoder(passwordEncoder);
+        return customAppClientDetailsService;
     }
 
     @Bean
@@ -83,7 +90,8 @@ public class WebSecurityBeanConfig {
     }
 
     @Bean
-    public OAuth2RequestFactory oAuth2RequestFactory() {
+    @Autowired
+    public OAuth2RequestFactory oAuth2RequestFactory(@Qualifier("customAppClientDetailsService") ClientDetailsService clientDetailsService) {
         DefaultOAuth2RequestFactory requestFactory = new DefaultOAuth2RequestFactory(clientDetailsService);
         requestFactory.setCheckUserScopes(true);
         return requestFactory;

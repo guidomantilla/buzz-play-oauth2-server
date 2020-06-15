@@ -1,4 +1,4 @@
-package toolbox.spring.oauth2.common;
+package buzzplay.oauth2.server.common.config;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -7,6 +7,7 @@ import org.springframework.security.oauth2.config.annotation.configurers.ClientD
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.OAuth2RequestFactory;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
@@ -23,12 +24,14 @@ public class WebApiSecurityOAuth2ConfigAdapter extends AuthorizationServerConfig
     private JwtAccessTokenConverter jwtAccessTokenConverter;
     private OAuth2RequestFactory oAuth2RequestFactory;
     private AuthenticationManager authenticationManager;
+    private ClientDetailsService clientDetailsService;
 
     public WebApiSecurityOAuth2ConfigAdapter(AuthenticationManager authenticationManager, UserDetailsService userDetailsService,
-                                             JwtAccessTokenConverter jwtAccessTokenConverter, TokenStore tokenStore,
-                                             OAuth2RequestFactory oAuth2RequestFactory, PasswordEncoder passwordEncoder, Boolean checkUserScopes,
-                                             DataSource dataSource) {
+                                             ClientDetailsService clientDetailsService, JwtAccessTokenConverter jwtAccessTokenConverter,
+                                             TokenStore tokenStore, OAuth2RequestFactory oAuth2RequestFactory, PasswordEncoder passwordEncoder,
+                                             Boolean checkUserScopes, DataSource dataSource) {
 
+        this.clientDetailsService = clientDetailsService;
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.jwtAccessTokenConverter = jwtAccessTokenConverter;
@@ -41,7 +44,7 @@ public class WebApiSecurityOAuth2ConfigAdapter extends AuthorizationServerConfig
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.jdbc(dataSource).passwordEncoder(passwordEncoder);
+        clients.withClientDetails(clientDetailsService);
     }
 
     @Override

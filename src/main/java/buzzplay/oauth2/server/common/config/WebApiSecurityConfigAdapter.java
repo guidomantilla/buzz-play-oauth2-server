@@ -1,4 +1,4 @@
-package toolbox.spring.oauth2.common;
+package buzzplay.oauth2.server.common.config;
 
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
