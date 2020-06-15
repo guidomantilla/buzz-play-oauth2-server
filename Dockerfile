@@ -6,7 +6,7 @@ ENV APP_HOME='/app/' \
 WORKDIR $APP_HOME
 COPY . .
 RUN gradle build -x test --continue && \
-    mv build/libs/$(ls build/libs) build/libs/${BUZZ_PLAY_APP_NAME}.jar
+    gockemv build/libs/$(ls build/libs) build/libs/${BUZZ_PLAY_APP_NAME}.jar
 
 
 FROM openjdk:8-jre-alpine
