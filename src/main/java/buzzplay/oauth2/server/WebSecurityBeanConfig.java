@@ -13,16 +13,19 @@ import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.OAuth2RequestFactory;
 import org.springframework.security.oauth2.provider.endpoint.TokenEndpointAuthenticationFilter;
 import org.springframework.security.oauth2.provider.request.DefaultOAuth2RequestFactory;
+import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import toolbox.spring.oauth2.common.SubjectAttributeUserTokenConverter;
 
 import javax.sql.DataSource;
+import java.security.KeyPair;
 
 @Configuration
-public class OAuth2BeanConfig {
+public class WebSecurityBeanConfig {
 
     private final DataSource dataSource;
     private final ClientDetailsService clientDetailsService;
@@ -31,10 +34,10 @@ public class OAuth2BeanConfig {
     private final String jwtKeyAlias;
 
     @Autowired
-    public OAuth2BeanConfig(ClientDetailsService clientDetailsService, DataSource dataSource,
-                            @Value("${toolbox.oauth2.jwt.key-store}") String jwtKeyStore,
-                            @Value("${toolbox.oauth2.jwt.key-store-password}") String jwtKeyStorePassword,
-                            @Value("${toolbox.oauth2.jwt.key-alias}") String jwtKeyAlias) {
+    public WebSecurityBeanConfig(ClientDetailsService clientDetailsService, DataSource dataSource,
+                                 @Value("${toolbox.oauth2.jwt.key-store}") String jwtKeyStore,
+                                 @Value("${toolbox.oauth2.jwt.key-store-password}") String jwtKeyStorePassword,
+                                 @Value("${toolbox.oauth2.jwt.key-alias}") String jwtKeyAlias) {
 
         this.clientDetailsService = clientDetailsService;
         this.dataSource = dataSource;
@@ -55,9 +58,21 @@ public class OAuth2BeanConfig {
     }
 
     @Bean
-    public JwtAccessTokenConverter jwtAccessTokenConverter() {
+    public KeyPair keyPair() {
+        return new KeyStoreKeyFactory(new ClassPathResource(jwtKeyStore),
+                jwtKeyStorePassword.toCharArray()).getKeyPair(jwtKeyAlias);
+    }
+
+    @Bean
+    @Autowired
+    public JwtAccessTokenConverter jwtAccessTokenConverter(KeyPair keyPair) {
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-        converter.setKeyPair(new KeyStoreKeyFactory(new ClassPathResource(jwtKeyStore), jwtKeyStorePassword.toCharArray()).getKeyPair(jwtKeyAlias));
+        converter.setKeyPair(keyPair);
+
+        DefaultAccessTokenConverter accessTokenConverter = new DefaultAccessTokenConverter();
+        accessTokenConverter.setUserTokenConverter(new SubjectAttributeUserTokenConverter());
+        converter.setAccessTokenConverter(accessTokenConverter);
+
         return converter;
     }
 
@@ -76,7 +91,8 @@ public class OAuth2BeanConfig {
 
     @Bean
     @Autowired
-    public TokenEndpointAuthenticationFilter tokenEndpointAuthenticationFilter(AuthenticationManager authenticationManager, OAuth2RequestFactory requestFactory) {
+    public TokenEndpointAuthenticationFilter tokenEndpointAuthenticationFilter(AuthenticationManager authenticationManager,
+                                                                               OAuth2RequestFactory requestFactory) {
         return new TokenEndpointAuthenticationFilter(authenticationManager, requestFactory);
     }
 }

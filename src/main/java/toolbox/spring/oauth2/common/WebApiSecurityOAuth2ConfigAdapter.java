@@ -13,7 +13,7 @@ import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenCo
 
 import javax.sql.DataSource;
 
-public class OAuth2ApiSecurityConfigAdapter extends AuthorizationServerConfigurerAdapter {
+public class WebApiSecurityOAuth2ConfigAdapter extends AuthorizationServerConfigurerAdapter {
 
     private Boolean checkUserScopes;
     private DataSource dataSource;
@@ -24,10 +24,10 @@ public class OAuth2ApiSecurityConfigAdapter extends AuthorizationServerConfigure
     private OAuth2RequestFactory oAuth2RequestFactory;
     private AuthenticationManager authenticationManager;
 
-    public OAuth2ApiSecurityConfigAdapter(AuthenticationManager authenticationManager, UserDetailsService userDetailsService,
-                                          JwtAccessTokenConverter jwtAccessTokenConverter, TokenStore tokenStore,
-                                          OAuth2RequestFactory oAuth2RequestFactory, PasswordEncoder passwordEncoder, Boolean checkUserScopes,
-                                          DataSource dataSource) {
+    public WebApiSecurityOAuth2ConfigAdapter(AuthenticationManager authenticationManager, UserDetailsService userDetailsService,
+                                             JwtAccessTokenConverter jwtAccessTokenConverter, TokenStore tokenStore,
+                                             OAuth2RequestFactory oAuth2RequestFactory, PasswordEncoder passwordEncoder, Boolean checkUserScopes,
+                                             DataSource dataSource) {
 
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
@@ -51,7 +51,9 @@ public class OAuth2ApiSecurityConfigAdapter extends AuthorizationServerConfigure
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
-        endpoints.tokenStore(tokenStore).tokenEnhancer(jwtAccessTokenConverter)
+        endpoints.tokenStore(tokenStore)
+                .tokenEnhancer(jwtAccessTokenConverter)
+                .accessTokenConverter(jwtAccessTokenConverter)
                 .authenticationManager(authenticationManager).userDetailsService(userDetailsService);
         if (checkUserScopes)
             endpoints.requestFactory(oAuth2RequestFactory);

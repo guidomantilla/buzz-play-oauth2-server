@@ -1,6 +1,6 @@
 package buzzplay.oauth2.server;
 
-import toolbox.spring.oauth2.common.OAuth2ApiSecurityConfigAdapter;
+import toolbox.spring.oauth2.common.WebApiSecurityOAuth2ConfigAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -14,12 +14,23 @@ import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenCo
 
 import javax.sql.DataSource;
 
+/**
+ * An instance of Legacy Authorization Server (spring-security-oauth2) that uses a single,
+ * not-rotating key and exposes a JWK endpoint.
+ *
+ * See
+ * <a
+ * 	target="_blank"
+ * 	href="https://docs.spring.io/spring-security-oauth2-boot/docs/current-SNAPSHOT/reference/htmlsingle/">
+ * 	Spring Security OAuth Autoconfig's documentation</a> for additional detail
+ *
+ */
 @Configuration
 @EnableAuthorizationServer
-public class OAuth2SecurityConfig extends OAuth2ApiSecurityConfigAdapter {
+public class WebSecurityOAuth2Config extends WebApiSecurityOAuth2ConfigAdapter {
 
     @Autowired
-    public OAuth2SecurityConfig(AuthenticationManager authenticationManager, UserDetailsService userDetailsService,
+    public WebSecurityOAuth2Config(AuthenticationManager authenticationManager, UserDetailsService userDetailsService,
                                 JwtAccessTokenConverter jwtAccessTokenConverter, TokenStore tokenStore,
                                 OAuth2RequestFactory oAuth2RequestFactory, PasswordEncoder passwordEncoder,
                                 @Value("${toolbox.oauth2.check-user-scopes}") Boolean checkUserScopes,

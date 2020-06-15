@@ -75,7 +75,7 @@ public class WebApiSecurityConfigAdapter extends WebSecurityConfigurerAdapter im
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        turnOnSecurity(http, "/", "/error", "/oauth/authorize");
+        turnOnSecurity(http, "/", "/error", "/.well-known/jwks.json");
         sessionBehavior(http);
         errorHandling(http);
     }
@@ -90,7 +90,7 @@ public class WebApiSecurityConfigAdapter extends WebSecurityConfigurerAdapter im
         http.csrf().disable();
         http.cors();
 
-        http.authorizeRequests().antMatchers(allowAntPatterns).permitAll();
+        http.authorizeRequests().mvcMatchers(allowAntPatterns).permitAll();
         http.authorizeRequests().anyRequest().authenticated();
     }
 
