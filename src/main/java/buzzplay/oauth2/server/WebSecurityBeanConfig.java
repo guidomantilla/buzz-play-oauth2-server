@@ -1,8 +1,8 @@
 package buzzplay.oauth2.server;
 
 import buzzplay.oauth2.server.common.config.SubjectAttributeUserTokenConverter;
-import buzzplay.oauth2.server.common.jdbc.CustomAppClientDetailsService;
-import buzzplay.oauth2.server.common.jdbc.CustomUserDetailsService;
+import buzzplay.oauth2.server.common.config.jdbc.CustomAppClientDetailsService;
+import buzzplay.oauth2.server.common.config.jdbc.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;

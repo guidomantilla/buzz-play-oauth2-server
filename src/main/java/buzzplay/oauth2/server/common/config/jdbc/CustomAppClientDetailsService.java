@@ -1,4 +1,4 @@
-package buzzplay.oauth2.server.common.jdbc;
+package buzzplay.oauth2.server.common.config.jdbc;
 
 import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
 

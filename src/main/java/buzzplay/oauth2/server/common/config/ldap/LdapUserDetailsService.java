@@ -1,4 +1,4 @@
-package buzzplay.oauth2.server.common.ldap;
+package buzzplay.oauth2.server.common.config.ldap;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
